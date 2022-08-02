@@ -390,4 +390,4 @@ export const abi = [
     }
   ]
 
-export const rivera_address = "0x6171cB3140ea24b41c3B031a5866a63F7817063c"
+export const rivera_address = "0xF1Ba6ab9f374Da8e400F01AC2E1BF1fF90c4b6B3"

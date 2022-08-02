@@ -18,6 +18,10 @@ export default function Home() {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       await provider.send("eth_requestAccounts", []);
       const signer = provider.getSigner();
+      const chainId = await signer.getChainId();
+      if( chainId !== 80001){
+        throw new Error("connect to matic testnet");
+      }
       setSigner(signer);
       setConnected(true);
       const contract = new ethers.Contract(rivera_address,abi,signer);
@@ -59,7 +63,12 @@ export default function Home() {
       toast("Minted")
     }
     catch(error){
-      toast(error.message)
+      if(error.code == -32603){
+        toast("Insufficient funds in wallet");
+      }
+      else{
+        toast(error.message);
+      }
     }
   }
 
