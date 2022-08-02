@@ -15,8 +15,11 @@ contract Rivera is ERC721 {
     constructor () ERC721("Rivera", "rivera") {}
     //minting the token
     function mint() public payable{
-        require(tokenIds <= maxTokenIds, "Exceed maximum supply");
+        //checks the token limit is reached or not
+        require(tokenIds < maxTokenIds, "Exceed maximum supply");
+        //checks whether user is sending the base amount
         require(msg.value >= basePrice, "Sending Less Matic for purchase");
+        //increaments the token id
         tokenIds += 1;
         _safeMint(msg.sender, tokenIds);
         //this will change the base price of the nft after three tokens minted
