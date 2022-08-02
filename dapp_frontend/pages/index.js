@@ -44,6 +44,7 @@ export default function Home() {
   //this function is for checking whether the nfts are free or not
   const checkForFreeAccess = async () => {
     try{
+      //gets the present token id of nft
       const token = await contract.tokenIds();
       setTokenId(token);
       if(token < 3){
