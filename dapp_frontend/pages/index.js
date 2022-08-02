@@ -1,10 +1,15 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+//ethers.js
 import {ethers} from 'ethers'
 import { useEffect, useState } from 'react'
+
+//Using react toasts to alert messages to the user
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
+//this are the abi and address of nft smart contract
 import { abi,rivera_address } from '../constants'
 
 export default function Home() {
@@ -15,15 +20,19 @@ export default function Home() {
   const [tokenId,setTokenId] = useState(0);
   const connect = async () => {
     try{
+
+      //using ethers providers for enabling the user to connect to the metamask
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       await provider.send("eth_requestAccounts", []);
       const signer = provider.getSigner();
       const chainId = await signer.getChainId();
+      //checking whether the user is connected to the correct chain
       if( chainId !== 80001){
         throw new Error("connect to matic testnet");
       }
       setSigner(signer);
       setConnected(true);
+      //connecting to the nft contract using ethers Contract
       const contract = new ethers.Contract(rivera_address,abi,signer);
       setContract(contract);
     }
@@ -32,7 +41,7 @@ export default function Home() {
       toast(error.message)
     }
   } 
-  
+  //this function is for checking whether the nfts are free or not
   const checkForFreeAccess = async () => {
     try{
       const token = await contract.tokenIds();
@@ -48,13 +57,15 @@ export default function Home() {
       toast(error.message);
     } 
   }
-
+  //this function is for minting the nft
   const mint = async () => {
     try{
       let tx;
+      //checking whether the tokenId is less than 3 to make sure that the user can mint the nft for free
       if(tokenId < 3){
         tx = await contract.mint();
       }
+      //otherwise the user needs to pay for the nft
       else{
         tx = await contract.mint({value:ethers.utils.parseEther("1")});
       }
@@ -71,7 +82,7 @@ export default function Home() {
       }
     }
   }
-
+  //checking everytime the user connects to print the message whether the user can mint the nft for free or not
   useEffect(() => {
     if(connected){
       checkForFreeAccess();
